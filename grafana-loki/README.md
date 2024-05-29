@@ -18,6 +18,10 @@ export PANEL_NAME="Panel 1"
 
 curl -X POST http://localhost:3000/api/dashboards/db \
 -H "Content-Type: application/json" \
+<<<<<<< HEAD
+=======
+-H "Authorization: Bearer buraya_token_gelir" \
+>>>>>>> f2ec24a (token'ı siliyorum aksi halde kabul etmiyor github)
 -d '{
   "dashboard": {
     "id": null,
