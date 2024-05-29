@@ -9,10 +9,16 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-  - job_name: dummy-logs
+  - job_name: dummy-logs-2
     static_configs:
       - targets:
           - localhost
         labels:
-          job: dummy
+          job: dummy-logger-2 # Bu satır hizmetin adını belirtir
           __path__: /var/log/dummy/*.log
+    pipeline_stages:
+      - match:
+          selector: '{job="dummy-logger-2"}'
+          stages:
+            - labels:
+                app: dummy-logger-2

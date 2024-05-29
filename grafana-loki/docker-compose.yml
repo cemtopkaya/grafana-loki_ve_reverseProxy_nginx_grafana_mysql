@@ -1,27 +1,6 @@
 version: '3.7'
 
 services:
-  loki:
-    image: grafana/loki
-    ports:
-      - "3100:3100"
-    command:
-      - -config.file=/etc/loki/local-config.yaml
-    privileged: true 
-    # links:
-      # - prometheus-master
-      # - prometheus-slave
-    volumes:
-      - ./loki-config.yaml:/etc/loki/local-config.yaml
-      - ./loki-data:/mnt/config
-
-  promtail:
-    image: grafana/promtail:2.5.0
-    volumes:
-      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml
-      - /var/log/dummy/:/var/log/dummy/
-    command: -config.file=/etc/promtail/promtail-config.yaml
-
   grafana:
     image: grafana/grafana:9.1.5
     ports:
@@ -29,15 +8,44 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana-dashboard.json:/var/lib/grafana/dashboards/grafana-dashboard.json
-    # entrypoint: [ "/bin/bash", "-c", "grafana-server --homepath=/usr/share/grafana & sleep 10 && curl -X POST -H 'Content-Type: application/json' -d @/var/lib/grafana/dashboards/grafana-dashboard.json http://admin:admin@localhost:3000/api/dashboards/db && wait" ]
+      - ./volume/grafana/etc/grafana/provisioning:/etc/grafana/provisioning
+      - ./volume/grafana/var/lib/grafana/dashboards/grafana-dashboard.json:/var/lib/grafana/dashboards/grafana-dashboard.json
 
-  dummy-logger:
+  loki:
+    image: grafana/loki
+    ports:
+      - "3100:3100"
+    command:
+      - -config.file=/etc/loki/local-config.yaml
+    privileged: true 
+    volumes:
+      - ./volume/loki/etc/loki/loki-config.yaml:/etc/loki/local-config.yaml
+      - ./volume/loki/loki-data:/mnt/config
+
+  # 1. LOGGER -----------------------------------------------------
+  promtail-1:
+    image: grafana/promtail:2.5.0
+    volumes:
+      - ./volume/promtail/1/etc/promtail/promtail-config.yaml:/etc/promtail/promtail-config.yaml
+      - ./volume/promtail/1/log/:/var/log/dummy/
+    command: -config.file=/etc/promtail/promtail-config.yaml
+
+  dummy-logger-1:
     image: busybox
     volumes:
-      - /var/log/dummy/:/var/log/dummy/
-    entrypoint: /bin/sh -c "while true; do echo 'dummy log entry' >> /var/log/dummy/dummy.log; sleep 5; done"
+      - ./volume/promtail/1/log/:/var/log/dummy/
+    entrypoint: /bin/sh -c "while true; do echo 'dummy log --1-- entry' >> /var/log/dummy/dummy.log; sleep 5; done"
 
-volumes:
-  loki-data:
+  # 2. LOGGER -----------------------------------------------------
+  promtail-2:
+    image: grafana/promtail:2.5.0
+    volumes:
+      - ./volume/promtail/2/etc/promtail/promtail-config.yaml:/etc/promtail/promtail-config.yaml
+      - ./volume/promtail/2/log/:/var/log/dummy/
+    command: -config.file=/etc/promtail/promtail-config.yaml
+
+  dummy-logger-2:
+    image: busybox
+    volumes:
+      - ./volume/promtail/2/log/:/var/log/dummy/
+    entrypoint: /bin/sh -c "while true; do echo 'dummy log --2-- entry' >> /var/log/dummy/dummy.log; sleep 5; done"
