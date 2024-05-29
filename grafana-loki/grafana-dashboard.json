@@ -1,0 +1,64 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Container Logs",
+    "tags": [],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 0,
+    "refresh": "5s",
+    "panels": [
+      {
+        "title": "Loki Logs",
+        "type": "logs",
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "datasource": null,
+        "targets": [
+          {
+            "expr": "{job=\"dummy\"} |= \"dummy log entry\"",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "title": "Promtail Logs",
+        "type": "logs",
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        },
+        "datasource": null,
+        "targets": [
+          {
+            "expr": "{job=\"promtail\"}",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "title": "Dummy Logger Logs",
+        "type": "logs",
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 16
+        },
+        "datasource": null,
+        "targets": [
+          {
+            "expr": "{job=\"dummy-logger\"}",
+            "refId": "A"
+          }
+        ]
+      }
+    ]
+  }
+}

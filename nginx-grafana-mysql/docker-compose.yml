@@ -51,6 +51,7 @@ services:
             - grafana-storage:/var/lib/grafana
             - grafana-storage:/var/log/grafana
             - grafana-config:/etc/grafana
+            - ./usr/share/grafana/public/locales/tr-TR/grafana.json:/usr/share/grafana/public/locales/tr-TR/grafana.json
         environment:
             - GF_SERVER_ROOT_URL=http://grafana_dashboard
             - GF_DATABASE_NAME=grafana

@@ -1,23 +1,5 @@
 # Grafana (MySQL) + Nginx reverse proxy
-For educational purposes only :D
+`nginx-grafana-mysql` Dizini içindeki docker-compose.yml dosyasını ayakladırarak görebilirsiniz.
 
-### Create a reverse proxy
-
-Creating a config file
-```sh
-$ nano nginx-revers-storage/conf.d/grafana.conf
-```
-Add this ...
-```sh
-upstream grafana_dashboard {
-  server    grafana_dashboard:3000;
-}
-server {
-    listen 80;
-    listen [::]:80;
-    server_name grafana.local;
-    location / {
-        proxy_pass http://grafana_dashboard;
-    }
-}
-```
+# Grafana ve Loki 
+`grafana-loki` Dizininde Loki denemelerini bu örnekte yapabilirsiniz
